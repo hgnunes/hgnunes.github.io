@@ -6,7 +6,7 @@ info:
   version: "1.0.0"
   title: "Service Delivery Platform API"
   x-logo:
-      url: "https://s3.amazonaws.com/sample-login/companies/avatars/000/003/399/original/Logo.png?1501106015"
+      url: "http://hgnunes.github.io/Logo.png"
   contact:
     email: "you@your-company.com"
 host: "virtserver.swaggerhub.com"
