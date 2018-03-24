@@ -5,6 +5,8 @@ info:
     \ to their services"
   version: "1.0.0"
   title: "Service Delivery Platform API"
+  x-logo:
+      url: "https://www.mobicare.com.br/images/mobicare-logo.png"
   contact:
     email: "you@your-company.com"
 host: "virtserver.swaggerhub.com"
