@@ -53,7 +53,7 @@ consumes:
 produces:
   - application/json
 securityDefinitions:
-  BEarer:
+  Bearer:
     type: apiKey
     description: >
       The clients of the API need to authenticate each request by including a key in every API request. The API keys are available in the Management Console
@@ -70,7 +70,7 @@ tags:
 - name: service providers
   description: Operations available to service providers
 - name: notification
-  description: Operations implemented by the service providers
+  description: Notifications sent to the service providers
 - name: internal services
   description: Operations available to internal services
   
@@ -79,9 +79,9 @@ paths:
     get:
       tags:
       - service providers
-      summary: search for a subscription
+      summary: List subscriptions
       operationId: searchSubscription
-      description: Searches for a subscription
+      description: Retrieve a list of subscriptions for a given User ID. A Service ID might be also informed as a filter.
       produces:
       - application/json
       parameters:
@@ -89,12 +89,12 @@ paths:
         name: userId
         type: string
         required: true
-        description: User Identification
+        description: User ID of the subscriptions to retrieve 
       - in: query
         name: serviceId
         type: integer
         required: false
-        description: ServiceIdentification
+        description: Service ID of the subscriptions to retrieve
       responses:
         200:
           description: returns a list of subscriptions
@@ -116,9 +116,9 @@ paths:
       tags:
       - channel providers
       - service providers
-      summary: creates a subscription
+      summary: Create a subscription
       operationId: addSubscription
-      description: Creates a new subscription
+      description: Cretes a new subscription for a given User ID on a given Offer ID
       consumes:
       - application/json
       produces:
@@ -185,9 +185,9 @@ paths:
     post:
       tags:
       - channel providers
-      summary: cancel a subscription
+      summary: Cancel a subscription
       operationId: cancelSubscription
-      description: Cancel an existing subscription
+      description: Cancel an existing subscription. The subscription is terminated immediately and the user will not be charged again for the subscription.
       consumes:
       - application/json
       produces:
@@ -222,9 +222,9 @@ paths:
     post:
       tags:
       - service providers
-      summary: Generates a one-time Billing
+      summary: Charges users for one-time purchases.
       operationId: microBilling
-      description: Micro Billing for one-time charges
+      description: Charges users for one-time purchases. The access to this operation is limited to a few service providers who have special requirements for charging outside the context of the recurring billing. 
       consumes:
       - application/json
       produces:
@@ -358,27 +358,34 @@ definitions:
       userId:
         type: string
         example: 552199999999
+        description: The identifier of the user to subscribe. 
       serviceId:
         type: integer
         example: 98772320
+        description: The Service ID of this subscription. 
       offerId:
         type: integer
         example: 5432
+        description: The Offer ID of this subscription.
       subscriptionChannel:
         type: string
         example: WEB
+        description: The Acquisition Channel requested the creations of this subscription. Acquisition Channels might take the following values (SMS, WAP, WEB, IVR, USSD, SATPUSH, SIMCARD, APP).
       tags:
         type: array
         items:
           type: string
         example: ["promotion", "foo", "campaign"]
+        description: Tags are used to facilitate searches and analysis on the subscription. A typical use case for tags would be to tag the new subscription created with a marketing campaign. 
       createDate:
         type: string
         format: date-time
         example: "2018-01-01T10:10:33.001Z"
+        description: DateTime of the subscription create request. 
       transactionId:
         type: string
         example: "1SDJFS-SDJSFS-0080DF"
+        description: The transaction ID guarantees that the platform will process only one copy of the request. If the Service Provider had a communication issue in the middle of a request and he wants to repeat the request, the transaction ID will guarantee that the platform will not process that same request twice.
   SubscriptionRenewItem:
     type: object
     required:
@@ -395,12 +402,15 @@ definitions:
       userId:
         type: string
         example: 552199999999
+        description: The identifier of the user to renew the subscription.
       serviceId:
         type: integer
         example: 98772320
+        description: The identifier of the service.
       offerId:
         type: integer
         example: 5432
+        description: The identifier of the offer.
       stepId:
         type: integer
         example: 5430222
@@ -423,6 +433,7 @@ definitions:
       transactionId:
         type: string
         example: "1SDJFS-SDJSFS-0080DF"
+        description: The transaction ID guarantees that the platform will process only one copy of the request. If the Service Provider had a communication issue in the middle of a request and he wants to repeat the request, the transaction ID will guarantee that the platform will not process that same request twice.
   SubscriptionCancelItem:
     type: object
     required:
@@ -431,23 +442,33 @@ definitions:
     - offerId
     - cancelChannel
     - cancelDate
+    - transactionID
     properties:
       userId:
         type: string
         example: 552199999999
+        description: The identifier of the user to cancel the subscription.
       serviceId:
         type: integer
         example: 98772320
+        description: The identifier of the service in which the user is subscribed.
       offerId:
         type: integer
         example: 5432
+        description: The identifier of the offer in which the user is subscribed.
       cancelChannel:
         type: string
         example: CUSTOMER_SERVICE
+        description: The Channel where the event was triggered. Channels might take the following values (SMS, WAP, WEB, IVR, USSD, SATPUSH, SIMCARD, APP, SYSTEM, CUSTOMER_SERVICE).
       cancelDate:
         type: string
         format: date-time
         example: "2018-01-14T10:10:33.001Z"
+        description: DateTime of the subscription cancel request. 
+      transactionId:
+        type: string
+        example: "1SDJFS-SDJSFS-0080DF"
+        description: The transaction ID guarantees that the platform will process only one copy of the request. If the Service Provider had a communication issue in the middle of a request and he wants to repeat the request, the transaction ID will guarantee that the platform will not process that same request twice.
   SubscriptionItemArray:
     type: array
     items:
@@ -461,6 +482,8 @@ definitions:
     - subscriptionChannel
     - createDate
     - nextPaymentDate
+    - cancelChannel
+    - cancelDate
     properties:
       subscriptionId:
         type: integer
@@ -468,6 +491,7 @@ definitions:
       userId:
         type: string
         example: 552199999999
+        description: The identifier of the subscribed user.
       serviceId:
         type: integer
         example: 98772320
@@ -486,17 +510,21 @@ definitions:
         type: string
         format: date-time
         example: "2018-01-01T10:10:33.001Z"
+        description: DateTime of the subscription create request. 
       nextPaymentDate:
         type: string
         format: date-time
         example: "2018-01-08T10:10:33.001Z"
+        description: DateTime of the next payment. It indicates when the platform will start trying to charge the user.
       cancelChannel:
         type: string
         example: CUSTOMER_SERVICE
+        description: The Channel where the event was triggered. Channels might take the following values (SMS, WAP, WEB, IVR, USSD, SATPUSH, SIMCARD, APP, SYSTEM, CUSTOMER_SERVICE).
       cancelDate:
         type: string
         format: date-time
         example: "2018-01-14T10:10:33.001Z"
+        description: DateTime of the subscription cancel request. 
   NotificationItem:
     type: object
     required:
@@ -508,33 +536,45 @@ definitions:
     - channel
     - eventDate
     - nextRenewalDate
+    - transactionID
     properties:
       userId:
         type: string
         example: 552199999999
+        description: The identifier of the user.
       serviceId:
         type: integer
         example: 98772320
+        description: The identifier of the service.
       offerId:
         type: integer
         example: 5432
+        description: The identifier of the offer.
       amountCharged:
         type: integer
         example: 399
+        description: The amount charged dugin the event. The value will be zero for every event that didn't generate any successfull charge. This number is in cents and assumes the use of local currency. Ex. if amountCharged = 399 than it means $3.99.
       event:
         type: string
         example: SUBSCRIBE
       channel:
         type: string
         example: SMS
+        description: The Channel where the event was triggered. Channels might take the following values (SMS, WAP, WEB, IVR, USSD, SATPUSH, SIMCARD, APP, SYSTEM, CUSTOMER_SERVICE).
       eventDate:
         type: string
         format: date-time
         example: "2018-01-14T10:10:33.001Z"
+        description: DateTime when the event happened.
       nextRenewalDate:
         type: string
         format: date-time
         example: "2018-01-21T10:10:33.001Z"
+        description: DateTime of the next payment. It indicates when the platform will start trying to charge the user.
+      transactionId:
+        type: string
+        example: "1SDJFS-SDJSFS-0080DF"
+        description: The transaction ID of the notification. The Transaction ID will help guarantee that the service provider will not process more than one copy of the request.
   BillingItem:
     type: object
     required:
@@ -546,16 +586,24 @@ definitions:
       userId:
         type: string
         example: 552199999999
+        description: The identifier of the user.
       serviceId:
         type: integer
         example: 98772320
+        description: The identifier of the service.
       offerId:
         type: integer
         example: 5432
+        description: The identifier of the offer.
       eventDate:
         type: string
         format: date-time
-        example: "2018-01-14T10:10:33.001Z" 
+        example: "2018-01-14T10:10:33.001Z"
+        description: DateTime of the billing request.
+      transactionId:
+        type: string
+        example: "1SDJFS-SDJSFS-0080DF"
+        description: The transaction ID of the notification. The Transaction ID will help guarantee that the service provider will not process more than one copy of the request.
   MoItem:
     type: object
     required:
@@ -568,19 +616,24 @@ definitions:
       userId:
         type: string
         example: 552199999999
+        description: The identifier of the user who sent the MO.
       serviceId:
         type: integer
         example: 98772320
+        description: The identifier of the service associated with the short code.
       shortCode:
         type: integer
         example: 405
+        description: The identifier of the short code. The short code is the destination of the MO.
       text:
         type: string
-        example: "AJUDA"
+        example: "Lorem ipsum"
+        description: Text of the MOT.
       eventDate:
         type: string
         format: date-time
         example: "2018-01-14T10:10:33.001Z"
+        description: DateTime when the MO was received by the platform.
   MtItem:
     type: object
     required:
@@ -593,16 +646,22 @@ definitions:
       userId:
         type: string
         example: 552199999999
+        description: The identifier of the user who will receive the MT.
       serviceId:
         type: integer
         example: 98772320
+        description: The identifier of the service.
       shortCode:
         type: integer
         example: 405
+        description: The identifier of the short code associated with the service.
       text:
         type: string
-        example: "Acesse o melhor App em http://www.apps.com"
+        example: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua"
+        description: Text of the MT.
       eventDate:
         type: string
         format: date-time
-        example: "2018-01-14T10:10:33.001Z"  
+        example: "2018-01-14T10:10:33.001Z"
+        description: DateTime of the MT request.
+
