@@ -1,34 +1,67 @@
 swagger: '2.0'
 info:
   description: >
-    The picture below shows the relationship between the entities.
+    The VAS Management API is a REST API which has predictable, resource-oriented URLs and uses other HTTP features such as HTTP verbs for each operation,HTTP authentication and HTTP status information to indicate API success or errors.
+    
+    The picture below shows the relationship between the entities and the main resources.
+    
+    1. **Service Provider** - The Service Provider is responsible for providing the service for the user.
+    
+    
+    2. **Channel Provider** - The Channel Provider is resposible for a subscription channel and is responsible for selling the service from the service prodiver. Once a user subscribes a service through a channel the service provider will be notified about that event.
+    
+    
+    3. **Subscription** - Handles all the operations regarding a Subscription, such as create, delete or update a subscription.
+    
+    
+    4. **Micro Billing** - Handles new Micro Billing requests.
+    
+    
+    5. **Messaging** - Allow Service Providers to sendo Mobile Terminated messages.
+    
+    6. **Web Hooks** - The platform send notifications (also known as *Data Syncs*) to the service providers. Those notifications contains information about the event that happened in the platform such as a subription in a service that belogns to the service provider.
+    
 
-    As can be seen, the solution is centered on the App.
+        +-------------------------------------------------------------------------------------------------+
+        |                                                                                                 |
+        |    +----------------+        +----------------+                                                 |
+        |    |Channel Provider|        |Service Provider+<-----------------------------------+            |
+        |    +-------+--------+        +--------+-------+                                    |            |
+        |            |                          |                                            |            |
+        |            |   +----------------------------------------------+                    |            |
+        |            |   |                      |                       |                    |            |
+        |            v   v                      v                       v                    |            |
+        |   +--------+---+---+       +----------+------+       +--------+----+      +--------+-------+    |
+        |   |  Subscription  |       |  Micro Billing  |       |  Messaging  |      |   Web Hooks    |    |
+        |   +----------------+       +-----------------+       +-------------+      +----------------+    |
+        |                                                                                                 |
+        +-------------------------------------------------------------------------------------------------+
 
-        +--------------------------------------------------------------------+
-        |                                                                    |
-        |  +----------------+        +----------------+                      |
-        |  |Channel Provider|        |Service Provider|                      |
-        |  +-------+--------+        +--------+-------+                      |
-        |          |                          |                              |
-        |          |   +----------------------------------------------+      |
-        |          |   |                      |                       |      |
-        |          |   |                      |                       |      |
-        | +--------+---+---+       +----------+------+       +--------+----+ |
-        | |Subscription API|       |Micro Billing API|       |Messaging API| |
-        | +----------------+       +-----------------+       +-------------+ |
-        |                                                                    |
-        |                                                                    |
-        +--------------------------------------------------------------------+
-
-    This API will be used for serice providers to manage subscription their services
 
   version: 1.0.0
-  title: Subscriptiob Management Platform API
+  title: VAS Management API
   x-logo:
       url: "http://hgnunes.github.io/Logo.png"
   contact:
-    email: you@your-company.com
+    email: contact@mobicare.com.br
+host: sdp.mobicare.com.br
+basePath: /v1
+schemes:
+  - https
+consumes:
+  - application/json
+produces:
+  - application/json
+securityDefinitions:
+  BEarer:
+    type: apiKey
+    description: >
+      The clients of the API need to authenticate each request by including a key in every API request. The API keys are available in the Management Console
+      
+      The API uses JWT together with HTTP Bearer Authentication to authenticate a service or a channel provider. The JWT token carry priviledges for the provider and should not be pubicly shared.
+
+    name: Authorization
+    in: header
 
 # tags are used for organizing operations
 tags:
@@ -573,8 +606,3 @@ definitions:
         type: string
         format: date-time
         example: "2018-01-14T10:10:33.001Z"  
-# Added by API Auto Mocking Plugin
-host: virtserver.swaggerhub.com
-basePath: /hgnunes/SSS/1.0.0
-schemes:
- - https
