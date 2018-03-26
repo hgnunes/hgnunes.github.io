@@ -44,8 +44,6 @@ info:
       url: "http://hgnunes.github.io/Logo.png"
   contact:
     email: contact@mobicare.com.br
-host: sdp.mobicare.com.br
-basePath: /v1
 schemes:
   - https
 consumes:
@@ -100,16 +98,28 @@ paths:
             $ref: '#/definitions/SubscriptionItemArray'
         400:
           description: invalid input, object invalid
+          schema:
+            $ref: '#/definitions/ErrorItem'
         401:
           description: invalid or expired user credentials
+          schema:
+            $ref: '#/definitions/ErrorItem'
         403:
           description: service does not belong to the service provider
+          schema:
+            $ref: '#/definitions/ErrorItem'
         409:
           description: user is already subscribed to the provider's service
+          schema:
+            $ref: '#/definitions/ErrorItem'
         500:
           description: unkown error
+          schema:
+            $ref: '#/definitions/ErrorItem'
         503:
           description: number of transactions per second exceed
+          schema:
+            $ref: '#/definitions/ErrorItem'
     post:
       tags:
       - channel providers
@@ -130,18 +140,32 @@ paths:
       responses:
         202:
           description: subscription request accepted, a callback will be sent to the provider after processing it
+          schema:
+            $ref: '#/definitions/MessageItem'
         400:
           description: invalid input, object invalid
+          schema:
+            $ref: '#/definitions/ErrorItem'
         401:
           description: invalid or expired user credentials
+          schema:
+            $ref: '#/definitions/ErrorItem'
         403:
           description: service does not belong to the service provider
+          schema:
+            $ref: '#/definitions/ErrorItem'
         409:
           description: user is already subscribed to the provider's service
+          schema:
+            $ref: '#/definitions/ErrorItem'
         500:
           description: unkown error
+          schema:
+            $ref: '#/definitions/ErrorItem'
         503:
           description: number of transactions per second exceed
+          schema:
+            $ref: '#/definitions/ErrorItem'
   /subscription/cancel/{subscriptionId}:
     post:
       tags:
@@ -156,7 +180,7 @@ paths:
       parameters:
       - name: subscriptionId
         in: path
-        description: Subscription Id
+        description: The identifier of the subscription to be cancelled.
         required: true
         type: integer
       - in: body
@@ -167,18 +191,32 @@ paths:
       responses:
         202:
           description: subscription request accepted, a callback will be sent to the provider after processing it
+          schema:
+            $ref: '#/definitions/MessageItem'
         400:
           description: invalid input, object invalid
+          schema:
+            $ref: '#/definitions/ErrorItem'
         401:
           description: invalid or expired user credentials
+          schema:
+            $ref: '#/definitions/ErrorItem'
         403:
           description: service does not belong to the service provider
+          schema:
+            $ref: '#/definitions/ErrorItem'
         409:
           description: user is not subscribed to the service
+          schema:
+            $ref: '#/definitions/ErrorItem'
         500:
           description: unkown error
+          schema:
+            $ref: '#/definitions/ErrorItem'
         503:
           description: number of transactions per second exceed
+          schema:
+            $ref: '#/definitions/ErrorItem'
   /microbilling:
     post:
       tags:
@@ -199,18 +237,32 @@ paths:
       responses:
         200:
           description: user was succesfully charged
+          schema:
+            $ref: '#/definitions/MessageItem'
         400:
           description: invalid input, object invalid
+          schema:
+            $ref: '#/definitions/ErrorItem'
         401:
           description: invalid or expired  credentials
+          schema:
+            $ref: '#/definitions/ErrorItem'
         402:
           description: user does not have enough balance
+          schema:
+            $ref: '#/definitions/ErrorItem'
         403:
           description: service does not belong to the service provider
+          schema:
+            $ref: '#/definitions/ErrorItem'
         500:
           description: unkown error
+          schema:
+            $ref: '#/definitions/ErrorItem'
         503:
           description: number of transactions per second exceed
+          schema:
+            $ref: '#/definitions/ErrorItem'
   /notification/{subscriptionId}:
     post:
       tags:
@@ -236,16 +288,28 @@ paths:
       responses:
         200:
           description: service provider succesfully processed the notification
+          schema:
+            $ref: '#/definitions/MessageItem'
         400:
           description: invalid input, object invalid
+          schema:
+            $ref: '#/definitions/ErrorItem'
         401:
           description: invalid or expired  credentials
+          schema:
+            $ref: '#/definitions/ErrorItem'
         403:
           description: service does not belong to the service provider
+          schema:
+            $ref: '#/definitions/ErrorItem'
         500:
           description: unkown error
+          schema:
+            $ref: '#/definitions/ErrorItem'
         503:
           description: number of transactions per second exceed
+          schema:
+            $ref: '#/definitions/ErrorItem'
   /messaging/mt:
     post:
       tags:
@@ -266,16 +330,28 @@ paths:
       responses:
         200:
           description: succesfully processed the notification
+          schema:
+            $ref: '#/definitions/MessageItem'
         400:
           description: invalid input, object invalid
+          schema:
+            $ref: '#/definitions/ErrorItem'
         401:
           description: invalid or expired  credentials
+          schema:
+            $ref: '#/definitions/ErrorItem'
         403:
           description: service does not belong to the service provider
+          schema:
+            $ref: '#/definitions/ErrorItem'
         500:
           description: unkown error
+          schema:
+            $ref: '#/definitions/ErrorItem'
         503:
           description: number of transactions per second exceed
+          schema:
+            $ref: '#/definitions/ErrorItem'
   /messaging/mo:
     post:
       tags:
@@ -296,16 +372,28 @@ paths:
       responses:
         200:
           description: service provider succesfully processed the notification
+          schema:
+            $ref: '#/definitions/MessageItem'
         400:
           description: invalid input, object invalid
+          schema:
+            $ref: '#/definitions/ErrorItem'
         401:
           description: invalid or expired  credentials
+          schema:
+            $ref: '#/definitions/ErrorItem'
         403:
           description: service does not belong to the service provider
+          schema:
+            $ref: '#/definitions/ErrorItem'
         500:
           description: unkown error
+          schema:
+            $ref: '#/definitions/ErrorItem'
         503:
           description: number of transactions per second exceed
+          schema:
+            $ref: '#/definitions/ErrorItem'
 definitions:
   SubscriptionCreateItem:
     type: object
@@ -375,9 +463,9 @@ definitions:
       stepId:
         type: integer
         example: 5430222
-      price:
+      amountCharged:
         type: integer 
-        description: Price in cents
+        description: The amount charged in cents
         example: 199
       period:
         type: integer
@@ -625,3 +713,28 @@ definitions:
         format: date-time
         example: "2018-01-14T10:10:33.001Z"
         description: DateTime of the MT request.
+  ErrorItem:
+    type: object
+    required:
+    - message
+    - code
+    properties:
+      message:
+        type: string
+        example: "Lorem ipsum dolor sit amet"
+        description: A message providing more details about the error.
+      code:
+        type: string
+        example: "invalid_subscription_id"
+        description: A code related to the specfic error that occurred.
+  MessageItem:
+    type: object
+    required:
+    - message
+    properties:
+      message:
+        type: string
+        example: "Lorem ipsum dolor sit amet"
+        description: A message providing more details about the successful operation.
+host: sdp.mobicare.com.br
+basePath: /v1
