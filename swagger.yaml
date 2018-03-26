@@ -1,7 +1,10 @@
 swagger: '2.0'
 info:
   description: >
-  
+    The picture below shows the relationship between the entities.
+
+    As can be seen, the solution is centered on the App.
+
         +--------------------------------------------------------------------+
         |                                                                    |
         |  +----------------+        +----------------+                      |
@@ -17,9 +20,9 @@ info:
         |                                                                    |
         |                                                                    |
         +--------------------------------------------------------------------+
-    
+
     This API will be used for serice providers to manage subscription their services
-    
+
   version: 1.0.0
   title: Subscriptiob Management Platform API
   x-logo:
