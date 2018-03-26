@@ -1,631 +1,577 @@
----
-swagger: "2.0"
+swagger: '2.0'
 info:
-  description: "This API will be used for serice providers to manage subscription\
-    \ to their services"
-  version: "1.0.0"
-  title: "Service Delivery Platform API"
+  description: >
+  
+    +--------------------------------------------------------------------+
+    |                                                                    |
+    |  +----------------+        +----------------+                      |
+    |  |Channel Provider|        |Service Provider|                      |
+    |  +-------+--------+        +--------+-------+                      |
+    |          |                          |                              |
+    |          |   +----------------------------------------------+      |
+    |          |   |                      |                       |      |
+    |          |   |                      |                       |      |
+    | +--------+---+---+       +----------+------+       +--------+----+ |
+    | |Subscription API|       |Micro Billing API|       |Messaging API| |
+    | +----------------+       +-----------------+       +-------------+ |
+    |                                                                    |
+    |                                                                    |
+    +--------------------------------------------------------------------+
+    
+    This API will be used for serice providers to manage subscription their services
+    
+  version: 1.0.0
+  title: Subscriptiob Management Platform API
   x-logo:
       url: "http://hgnunes.github.io/Logo.png"
   contact:
-    email: "you@your-company.com"
-host: "virtserver.swaggerhub.com"
-basePath: "/hgnunes/SSS/1.0.0"
+    email: you@your-company.com
+
+# tags are used for organizing operations
 tags:
-- name: "channel providers"
-  description: "Operations available to channel providers"
-- name: "service providers"
-  description: "Operations available to service providers"
-- name: "notification"
-  description: "Operations implemented by the service providers"
-- name: "internal services"
-  description: "Operations available to internal services"
-schemes:
-- "https"
+- name: channel providers
+  description: Operations available to channel providers
+- name: service providers
+  description: Operations available to service providers
+- name: notification
+  description: Operations implemented by the service providers
+- name: internal services
+  description: Operations available to internal services
+  
 paths:
   /subscription:
     get:
       tags:
-      - "service providers"
-      summary: "search for a subscription"
-      description: "Searches for a subscription"
-      operationId: "searchSubscription"
+      - service providers
+      summary: search for a subscription
+      operationId: searchSubscription
+      description: Searches for a subscription
       produces:
-      - "application/json"
+      - application/json
       parameters:
-      - name: "userId"
-        in: "query"
-        description: "User Identification"
+      - in: query
+        name: userId
+        type: string
         required: true
-        type: "string"
-      - name: "serviceId"
-        in: "query"
-        description: "ServiceIdentification"
+        description: User Identification
+      - in: query
+        name: serviceId
+        type: integer
         required: false
-        type: "integer"
+        description: ServiceIdentification
       responses:
         200:
-          description: "returns a list of subscriptions"
+          description: returns a list of subscriptions
           schema:
-            $ref: "#/definitions/SubscriptionItemArray"
+            $ref: '#/definitions/SubscriptionItemArray'
         400:
-          description: "invalid input, object invalid"
+          description: invalid input, object invalid
         401:
-          description: "invalid or expired user credentials"
+          description: invalid or expired user credentials
         403:
-          description: "service does not belong to the service provider"
+          description: service does not belong to the service provider
         409:
-          description: "user is already subscribed to the provider's service"
+          description: user is already subscribed to the provider's service
         500:
-          description: "unkown error"
+          description: unkown error
         503:
-          description: "number of transactions per second exceed"
+          description: number of transactions per second exceed
     post:
       tags:
-      - "channel providers"
-      - "service providers"
-      summary: "creates a subscription"
-      description: "Creates a new subscription"
-      operationId: "addSubscription"
+      - channel providers
+      - service providers
+      summary: creates a subscription
+      operationId: addSubscription
+      description: Creates a new subscription
       consumes:
-      - "application/json"
+      - application/json
       produces:
-      - "application/json"
+      - application/json
       parameters:
-      - in: "body"
-        name: "subscriptionItem"
-        description: "Subscription item to add"
-        required: false
+      - in: body
+        name: subscriptionItem
+        description: Subscription item to add
         schema:
-          $ref: "#/definitions/SubscriptionCreateItem"
+          $ref: '#/definitions/SubscriptionCreateItem'
       responses:
         202:
-          description: "subscription request accepted, a callback will be sent to\
-            \ the provider after processing it"
+          description: subscription request accepted, a callback will be sent to the provider after processing it
         400:
-          description: "invalid input, object invalid"
+          description: invalid input, object invalid
         401:
-          description: "invalid or expired user credentials"
+          description: invalid or expired user credentials
         403:
-          description: "service does not belong to the service provider"
+          description: service does not belong to the service provider
         409:
-          description: "user is already subscribed to the provider's service"
+          description: user is already subscribed to the provider's service
         500:
-          description: "unkown error"
+          description: unkown error
         503:
-          description: "number of transactions per second exceed"
+          description: number of transactions per second exceed
   /subscription/{subscriptionId}:
     put:
       tags:
-      - "internal services"
-      summary: "updates an subscription after successfully charging the user"
-      description: "Updates an existing subscription"
-      operationId: "updateSubscription"
+      - internal services
+      summary: updates an subscription after successfully charging the user
+      operationId: updateSubscription
+      description: Updates an existing subscription
       consumes:
-      - "application/json"
+      - application/json
       produces:
-      - "application/json"
+      - application/json
       parameters:
-      - name: "subscriptionId"
-        in: "path"
-        description: "Subscription Id"
+      - name: subscriptionId
+        in: path
+        description: Subscription Id
         required: true
-        type: "integer"
-      - in: "body"
-        name: "subscriptionItem"
-        description: "Subscription item to add"
-        required: false
+        type: integer
+      - in: body
+        name: subscriptionItem
+        description: Subscription item to add
         schema:
-          $ref: "#/definitions/SubscriptionRenewItem"
+          $ref: '#/definitions/SubscriptionRenewItem'
       responses:
         202:
-          description: "subscription request accepted, a callback will be sent to\
-            \ the provider after processing it"
+          description: subscription request accepted, a callback will be sent to the provider after processing it
         400:
-          description: "invalid input, object invalid"
+          description: invalid input, object invalid
         401:
-          description: "invalid or expired user credentials"
+          description: invalid or expired user credentials
         403:
-          description: "service does not belong to the service provider"
+          description: service does not belong to the service provider
         409:
-          description: "user is not subscribed to the service"
+          description: user is not subscribed to the service
         500:
-          description: "unkown error"
+          description: unkown error
         503:
-          description: "number of transactions per second exceed"
+          description: number of transactions per second exceed
   /subscription/cancel/{subscriptionId}:
     post:
       tags:
-      - "channel providers"
-      summary: "cancel a subscription"
-      description: "Cancel an existing subscription"
-      operationId: "cancelSubscription"
+      - channel providers
+      summary: cancel a subscription
+      operationId: cancelSubscription
+      description: Cancel an existing subscription
       consumes:
-      - "application/json"
+      - application/json
       produces:
-      - "application/json"
+      - application/json
       parameters:
-      - name: "subscriptionId"
-        in: "path"
-        description: "Subscription Id"
+      - name: subscriptionId
+        in: path
+        description: Subscription Id
         required: true
-        type: "integer"
-      - in: "body"
-        name: "subscriptionItem"
-        description: "Subscription item to add"
-        required: false
+        type: integer
+      - in: body
+        name: subscriptionItem
+        description: Subscription item to add
         schema:
-          $ref: "#/definitions/SubscriptionCancelItem"
+          $ref: '#/definitions/SubscriptionCancelItem'
       responses:
         202:
-          description: "subscription request accepted, a callback will be sent to\
-            \ the provider after processing it"
+          description: subscription request accepted, a callback will be sent to the provider after processing it
         400:
-          description: "invalid input, object invalid"
+          description: invalid input, object invalid
         401:
-          description: "invalid or expired user credentials"
+          description: invalid or expired user credentials
         403:
-          description: "service does not belong to the service provider"
+          description: service does not belong to the service provider
         409:
-          description: "user is not subscribed to the service"
+          description: user is not subscribed to the service
         500:
-          description: "unkown error"
+          description: unkown error
         503:
-          description: "number of transactions per second exceed"
+          description: number of transactions per second exceed
   /microbilling:
     post:
       tags:
-      - "service providers"
-      summary: "Generates a one-time Billing"
-      description: "Micro Billing for one-time charges"
-      operationId: "microBilling"
+      - service providers
+      summary: Generates a one-time Billing
+      operationId: microBilling
+      description: Micro Billing for one-time charges
       consumes:
-      - "application/json"
+      - application/json
       produces:
-      - "application/json"
+      - application/json
       parameters:
-      - in: "body"
-        name: "billingItem"
-        description: "Information for the one time charge."
-        required: false
+      - in: body
+        name: billingItem
+        description: Information for the one time charge.
         schema:
-          $ref: "#/definitions/BillingItem"
+          $ref: '#/definitions/BillingItem'
       responses:
         200:
-          description: "user was succesfully charged"
+          description: user was succesfully charged
         400:
-          description: "invalid input, object invalid"
+          description: invalid input, object invalid
         401:
-          description: "invalid or expired  credentials"
+          description: invalid or expired  credentials
         402:
-          description: "user does not have enough balance"
+          description: user does not have enough balance
         403:
-          description: "service does not belong to the service provider"
+          description: service does not belong to the service provider
         500:
-          description: "unkown error"
+          description: unkown error
         503:
-          description: "number of transactions per second exceed"
+          description: number of transactions per second exceed
   /notification/{subscriptionId}:
     post:
       tags:
-      - "notification"
-      summary: "Notify the service provider about an event"
-      description: "Every time  subscription changes its state a notification is sent\
-        \ to the service provider"
-      operationId: "notifyEvent"
+      - notification
+      summary: Notify the service provider about an event
+      operationId: notifyEvent
+      description: Every time  subscription changes its state a notification is sent to the service provider
       consumes:
-      - "application/json"
+      - application/json
       produces:
-      - "application/json"
+      - application/json
       parameters:
-      - name: "subscriptionId"
-        in: "path"
-        description: "Subscription Id"
+      - name: subscriptionId
+        in: path
+        description: Subscription Id
         required: true
-        type: "integer"
-      - in: "body"
-        name: "notificationItem"
-        description: "Notification containing the information about an event regarding\
-          \ the subscription"
-        required: false
+        type: integer
+      - in: body
+        name: notificationItem
+        description: Notification containing the information about an event regarding the subscription
         schema:
-          $ref: "#/definitions/NotificationItem"
+          $ref: '#/definitions/NotificationItem'
       responses:
         200:
-          description: "service provider succesfully processed the notification"
+          description: service provider succesfully processed the notification
         400:
-          description: "invalid input, object invalid"
+          description: invalid input, object invalid
         401:
-          description: "invalid or expired  credentials"
+          description: invalid or expired  credentials
         403:
-          description: "service does not belong to the service provider"
+          description: service does not belong to the service provider
         500:
-          description: "unkown error"
+          description: unkown error
         503:
-          description: "number of transactions per second exceed"
+          description: number of transactions per second exceed
   /messaging/mt:
     post:
       tags:
-      - "service providers"
-      summary: "Receive a mobile terminated message request"
-      description: "API for service providers to request a Mobile Terminated message\
-        \ do be sent"
-      operationId: "mtReceive"
+      - service providers
+      summary: Receive a mobile terminated message request
+      operationId: mtReceive
+      description: API for service providers to request a Mobile Terminated message do be sent
       consumes:
-      - "application/json"
+      - application/json
       produces:
-      - "application/json"
+      - application/json
       parameters:
-      - in: "body"
-        name: "moItem"
-        description: "Notification containing the information about a mobile terminated\
-          \ message"
-        required: false
+      - in: body
+        name: moItem
+        description: Notification containing the information about a mobile terminated message
         schema:
-          $ref: "#/definitions/MtItem"
+          $ref: '#/definitions/MtItem'
       responses:
         200:
-          description: "succesfully processed the notification"
+          description: succesfully processed the notification
         400:
-          description: "invalid input, object invalid"
+          description: invalid input, object invalid
         401:
-          description: "invalid or expired  credentials"
+          description: invalid or expired  credentials
         403:
-          description: "service does not belong to the service provider"
+          description: service does not belong to the service provider
         500:
-          description: "unkown error"
+          description: unkown error
         503:
-          description: "number of transactions per second exceed"
+          description: number of transactions per second exceed
   /messaging/mo:
     post:
       tags:
-      - "notification"
-      summary: "Notify the service provider about a mobile originated message"
-      description: "Notification sent every time a mobile originated message is sent\
-        \ to the service provider (excluding messages intercepted by the SDP platform)"
-      operationId: "moReceive"
+      - notification
+      summary: Notify the service provider about a mobile originated message
+      operationId: moReceive
+      description: Notification sent every time a mobile originated message is sent to the service provider (excluding messages intercepted by the SDP platform)
       consumes:
-      - "application/json"
+      - application/json
       produces:
-      - "application/json"
+      - application/json
       parameters:
-      - in: "body"
-        name: "moItem"
-        description: "Notification containing the information about a mobile originated\
-          \ message"
-        required: false
+      - in: body
+        name: moItem
+        description: Notification containing the information about a mobile originated message
         schema:
-          $ref: "#/definitions/MoItem"
+          $ref: '#/definitions/MoItem'
       responses:
         200:
-          description: "service provider succesfully processed the notification"
+          description: service provider succesfully processed the notification
         400:
-          description: "invalid input, object invalid"
+          description: invalid input, object invalid
         401:
-          description: "invalid or expired  credentials"
+          description: invalid or expired  credentials
         403:
-          description: "service does not belong to the service provider"
+          description: service does not belong to the service provider
         500:
-          description: "unkown error"
+          description: unkown error
         503:
-          description: "number of transactions per second exceed"
+          description: number of transactions per second exceed
 definitions:
   SubscriptionCreateItem:
-    type: "object"
+    type: object
     required:
-    - "createDate"
-    - "offerId"
-    - "serviceId"
-    - "subscriptionChannel"
-    - "userId"
+    - userId
+    - serviceId
+    - offerId
+    - subscriptionChannel
+    - createDate
     properties:
       userId:
-        type: "string"
-        example: "552199999999"
+        type: string
+        example: 552199999999
       serviceId:
-        type: "integer"
+        type: integer
         example: 98772320
       offerId:
-        type: "integer"
+        type: integer
         example: 5432
       subscriptionChannel:
-        type: "string"
-        example: "WEB"
+        type: string
+        example: WEB
       tags:
-        type: "array"
-        example:
-        - "promotion"
-        - "foo"
-        - "campaign"
+        type: array
         items:
-          type: "string"
+          type: string
+        example: ["promotion", "foo", "campaign"]
       createDate:
-        type: "string"
-        format: "date-time"
+        type: string
+        format: date-time
         example: "2018-01-01T10:10:33.001Z"
       transactionId:
-        type: "string"
+        type: string
         example: "1SDJFS-SDJSFS-0080DF"
-    example:
-      offerId: 5432
-      serviceId: 98772320
-      userId: "552199999999"
-      transactionId: "1SDJFS-SDJSFS-0080DF"
-      subscriptionChannel: "WEB"
-      tags:
-      - "promotion"
-      - "foo"
-      - "campaign"
-      createDate: "2018-01-01T10:10:33.001Z"
   SubscriptionRenewItem:
-    type: "object"
+    type: object
     required:
-    - "nextPaymentDate"
-    - "offerId"
-    - "paymentDate"
-    - "period"
-    - "price"
-    - "serviceId"
-    - "stepId"
-    - "transactionId"
-    - "userId"
+    - userId
+    - serviceId
+    - offerId
+    - stepId
+    - price
+    - period
+    - paymentDate
+    - nextPaymentDate
+    - transactionId
     properties:
       userId:
-        type: "string"
-        example: "552199999999"
+        type: string
+        example: 552199999999
       serviceId:
-        type: "integer"
+        type: integer
         example: 98772320
       offerId:
-        type: "integer"
+        type: integer
         example: 5432
       stepId:
-        type: "integer"
+        type: integer
         example: 5430222
       price:
-        type: "integer"
+        type: integer 
+        description: Price in cents
         example: 199
-        description: "Price in cents"
       period:
-        type: "integer"
+        type: integer
+        description: Period in seconds
         example: 10080
-        description: "Period in seconds"
       paymentDate:
-        type: "string"
-        format: "date-time"
+        type: string
+        format: date-time
         example: "2018-01-01T10:10:33.001Z"
       nextPaymentDate:
-        type: "string"
-        format: "date-time"
+        type: string
+        format: date-time
         example: "2018-01-08T10:10:33.001Z"
       transactionId:
-        type: "string"
+        type: string
         example: "1SDJFS-SDJSFS-0080DF"
-    example:
-      period: 10080
-      nextPaymentDate: "2018-01-08T10:10:33.001Z"
-      price: 199
-      stepId: 5430222
-      offerId: 5432
-      serviceId: 98772320
-      paymentDate: "2018-01-01T10:10:33.001Z"
-      userId: "552199999999"
-      transactionId: "1SDJFS-SDJSFS-0080DF"
   SubscriptionCancelItem:
-    type: "object"
+    type: object
     required:
-    - "cancelChannel"
-    - "cancelDate"
-    - "offerId"
-    - "serviceId"
-    - "userId"
+    - userId
+    - serviceId
+    - offerId
+    - cancelChannel
+    - cancelDate
     properties:
       userId:
-        type: "string"
-        example: "552199999999"
+        type: string
+        example: 552199999999
       serviceId:
-        type: "integer"
+        type: integer
         example: 98772320
       offerId:
-        type: "integer"
+        type: integer
         example: 5432
       cancelChannel:
-        type: "string"
-        example: "CUSTOMER_SERVICE"
+        type: string
+        example: CUSTOMER_SERVICE
       cancelDate:
-        type: "string"
-        format: "date-time"
+        type: string
+        format: date-time
         example: "2018-01-14T10:10:33.001Z"
-    example:
-      cancelChannel: "CUSTOMER_SERVICE"
-      cancelDate: "2018-01-14T10:10:33.001Z"
-      offerId: 5432
-      serviceId: 98772320
-      userId: "552199999999"
   SubscriptionItemArray:
-    type: "array"
+    type: array
     items:
-      $ref: "#/definitions/SubscriptionItem"
+      $ref: '#/definitions/SubscriptionItem' 
   SubscriptionItem:
-    type: "object"
+    type: object
     required:
-    - "createDate"
-    - "nextPaymentDate"
-    - "offerId"
-    - "serviceId"
-    - "subscriptionChannel"
-    - "userId"
+    - userId
+    - serviceId
+    - offerId
+    - subscriptionChannel
+    - createDate
+    - nextPaymentDate
     properties:
       subscriptionId:
-        type: "integer"
+        type: integer
         example: 54322145522
       userId:
-        type: "string"
-        example: "552199999999"
+        type: string
+        example: 552199999999
       serviceId:
-        type: "integer"
+        type: integer
         example: 98772320
       offerId:
-        type: "integer"
+        type: integer
         example: 5432
       subscriptionChannel:
-        type: "string"
-        example: "WEB"
+        type: string
+        example: WEB
       tags:
-        type: "array"
-        example:
-        - "foo"
-        - "bar"
-        - "campaign"
+        type: array
         items:
-          type: "string"
+          type: string
+        example: ["foo", "bar", "campaign"]
       createDate:
-        type: "string"
-        format: "date-time"
+        type: string
+        format: date-time
         example: "2018-01-01T10:10:33.001Z"
       nextPaymentDate:
-        type: "string"
-        format: "date-time"
+        type: string
+        format: date-time
         example: "2018-01-08T10:10:33.001Z"
       cancelChannel:
-        type: "string"
-        example: "CUSTOMER_SERVICE"
+        type: string
+        example: CUSTOMER_SERVICE
       cancelDate:
-        type: "string"
-        format: "date-time"
+        type: string
+        format: date-time
         example: "2018-01-14T10:10:33.001Z"
   NotificationItem:
-    type: "object"
+    type: object
     required:
-    - "amountCharged"
-    - "channel"
-    - "event"
-    - "eventDate"
-    - "nextRenewalDate"
-    - "offerId"
-    - "serviceId"
-    - "userId"
+    - userId
+    - serviceId
+    - offerId
+    - amountCharged
+    - event
+    - channel
+    - eventDate
+    - nextRenewalDate
     properties:
       userId:
-        type: "string"
-        example: "552199999999"
+        type: string
+        example: 552199999999
       serviceId:
-        type: "integer"
+        type: integer
         example: 98772320
       offerId:
-        type: "integer"
+        type: integer
         example: 5432
       amountCharged:
-        type: "integer"
+        type: integer
         example: 399
       event:
-        type: "string"
-        example: "SUBSCRIBE"
+        type: string
+        example: SUBSCRIBE
       channel:
-        type: "string"
-        example: "SMS"
+        type: string
+        example: SMS
       eventDate:
-        type: "string"
-        format: "date-time"
+        type: string
+        format: date-time
         example: "2018-01-14T10:10:33.001Z"
       nextRenewalDate:
-        type: "string"
-        format: "date-time"
+        type: string
+        format: date-time
         example: "2018-01-21T10:10:33.001Z"
-    example:
-      amountCharged: 399
-      channel: "SMS"
-      offerId: 5432
-      nextRenewalDate: "2018-01-21T10:10:33.001Z"
-      serviceId: 98772320
-      event: "SUBSCRIBE"
-      userId: "552199999999"
-      eventDate: "2018-01-14T10:10:33.001Z"
   BillingItem:
-    type: "object"
+    type: object
     required:
-    - "eventDate"
-    - "offerId"
-    - "serviceId"
-    - "userId"
+    - userId
+    - serviceId
+    - offerId
+    - eventDate
     properties:
       userId:
-        type: "string"
-        example: "552199999999"
+        type: string
+        example: 552199999999
       serviceId:
-        type: "integer"
+        type: integer
         example: 98772320
       offerId:
-        type: "integer"
+        type: integer
         example: 5432
       eventDate:
-        type: "string"
-        format: "date-time"
-        example: "2018-01-14T10:10:33.001Z"
-    example:
-      offerId: 5432
-      serviceId: 98772320
-      userId: "552199999999"
-      eventDate: "2018-01-14T10:10:33.001Z"
+        type: string
+        format: date-time
+        example: "2018-01-14T10:10:33.001Z" 
   MoItem:
-    type: "object"
+    type: object
     required:
-    - "eventDate"
-    - "serviceId"
-    - "shortCode"
-    - "text"
-    - "userId"
+    - userId
+    - serviceId
+    - shortCode
+    - text
+    - eventDate
     properties:
       userId:
-        type: "string"
-        example: "552199999999"
+        type: string
+        example: 552199999999
       serviceId:
-        type: "integer"
+        type: integer
         example: 98772320
       shortCode:
-        type: "integer"
+        type: integer
         example: 405
       text:
-        type: "string"
+        type: string
         example: "AJUDA"
       eventDate:
-        type: "string"
-        format: "date-time"
+        type: string
+        format: date-time
         example: "2018-01-14T10:10:33.001Z"
-    example:
-      text: "AJUDA"
-      serviceId: 98772320
-      userId: "552199999999"
-      shortCode: 405
-      eventDate: "2018-01-14T10:10:33.001Z"
   MtItem:
-    type: "object"
+    type: object
     required:
-    - "eventDate"
-    - "serviceId"
-    - "shortCode"
-    - "text"
-    - "userId"
+    - userId
+    - serviceId
+    - shortCode
+    - text
+    - eventDate
     properties:
       userId:
-        type: "string"
-        example: "552199999999"
+        type: string
+        example: 552199999999
       serviceId:
-        type: "integer"
+        type: integer
         example: 98772320
       shortCode:
-        type: "integer"
+        type: integer
         example: 405
       text:
-        type: "string"
+        type: string
         example: "Acesse o melhor App em http://www.apps.com"
       eventDate:
-        type: "string"
-        format: "date-time"
-        example: "2018-01-14T10:10:33.001Z"
-    example:
-      text: "Acesse o melhor App em http://www.apps.com"
-      serviceId: 98772320
-      userId: "552199999999"
-      shortCode: 405
-      eventDate: "2018-01-14T10:10:33.001Z"
+        type: string
+        format: date-time
+        example: "2018-01-14T10:10:33.001Z"  
+# Added by API Auto Mocking Plugin
+host: virtserver.swaggerhub.com
+basePath: /hgnunes/SSS/1.0.0
+schemes:
+ - https
