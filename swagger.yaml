@@ -1,43 +1,84 @@
 swagger: '2.0'
 info:
   description: >
-    The VAS Management API is a REST API which has predictable, resource-oriented URLs and uses other HTTP features such as HTTP verbs for each operation,HTTP authentication and HTTP status information to indicate API success or errors.
+    
+    The VAS Management Platform, allows the telecom carrier to control the entire lifecycle of VAS services and subscriptions. The platform allows acquisiton channel providers to create new subscriptions providing a high level of control on the subscriptions. It also provides notifications to service providers so enabling them to provide VAS services to the carrier users in a seamless way. 
+    
+    All the value-added services are configured within the platform, with one or more offers. Offers define the business rules of the service such as trial criteria, billing steps, prices, use periods, types of payment (carrier billing, credit card, bundles) and the automatic cancellation criteria.
+    
+    ---
+    
+    # API Reference
+    
+    The VAS Management API is a REST API which has predictable, resource-oriented URLs and uses other HTTP features such as HTTP verbs for each operation, HTTP authentication and HTTP status information to indicate API success or errors.
     
     The picture below shows the relationship between the entities and the main resources.
     
-    1. **Service Provider** - The Service Provider is responsible for providing the service for the user.
+    * **Service Provider** - The Service Provider is responsible for providing the service for the user.
     
     
-    2. **Channel Provider** - The Channel Provider is resposible for a subscription channel and is responsible for selling the service from the service prodiver. Once a user subscribes a service through a channel the service provider will be notified about that event.
+    * **Channel Provider** - The Channel Provider is resposible for a subscription channel and is responsible for selling the service from the service prodiver. Once a user subscribes a service through a channel the service provider will be notified about that event.
     
     
-    3. **Subscription** - Handles all the operations regarding a Subscription, such as create, delete or update a subscription.
+    * **Subscription** - Handles all the operations regarding a Subscription, such as create, delete or update a subscription.
     
     
-    4. **Micro Billing** - Handles new Micro Billing requests.
+    * **Micro Billing** - Handles new Micro Billing requests.
     
     
-    5. **Messaging** - Allow Service Providers to sendo Mobile Terminated messages.
+    * **Messaging** - Allow Service Providers to sendo Mobile Terminated messages.
     
-    6. **Web Hooks** - The platform send notifications (also known as *Data Syncs*) to the service providers. Those notifications contains information about the event that happened in the platform such as a subription in a service that belogns to the service provider.
+    * **Web Hooks** - The platform send notifications (also known as *Data Syncs*) to the service providers. Those notifications contains information about the event that happened in the platform such as a subription in a service that belogns to the service provider.
     
-
-        +-------------------------------------------------------------------------------------------------+
-        |                                                                                                 |
-        |    +----------------+        +----------------+                                                 |
-        |    |Channel Provider|        |Service Provider+<-----------------------------------+            |
-        |    +-------+--------+        +--------+-------+                                    |            |
-        |            |                          |                                            |            |
-        |            |   +----------------------------------------------+                    |            |
-        |            |   |                      |                       |                    |            |
-        |            v   v                      v                       v                    |            |
-        |   +--------+---+---+       +----------+------+       +--------+----+      +--------+-------+    |
-        |   |  Subscription  |       |  Micro Billing  |       |  Messaging  |      |   Web Hooks    |    |
-        |   +----------------+       +-----------------+       +-------------+      +----------------+    |
-        |                                                                                                 |
-        +-------------------------------------------------------------------------------------------------+
-
-
+    
+          +----------------+        +----------------+         +----------------+
+          |Channel Provider|        |Service Provider|<--------+   Data Syncs   |
+          +----------------+        +----------------+         +----------------+
+               |                            |
+               |  +-----------------------------------------------------+
+               |  |                         |                           |
+               v  v                         v                           v
+          +----------------+        +----------------+         +----------------+
+          |  Subscription  |        |  Micro Billing |         |   Messaging    |
+          +----------------+        +----------------+         +----------------+
+    
+      
+      
+      ---
+      
+      # HTTP Status
+      
+      The API uses HTTP status information to indicate API success or errors. The list below describes the success and error status codes.
+      
+      * **HTTP 200** - OK. Request was successly processed.
+      * **HTTP 202** - Accepted. The request was accepted and will be processed asynchronously.
+      * **HTTP 401** - Invalid or expired user credentials. The JWT token is not valid.
+      * **HTTP 402** - User does not have suffient balance to process the request.
+      * **HTTP 403** - The server understood the request but refuses to authorize it. The client should not automatically repeat the request with the same credentials. Ex. The service provider is attempting to manage a subscription from a another service provider.
+      * **HTTP 409** - Conflict. The request could not be completed due to a conflict with the current state of the target resource. Ex. The user is already subscribed to the service in a different offer.
+      * **HTTP 500** - The server encountered an unexpected condition that prevented it from fulfilling the request.
+      * **HTTP 503** - The server is currently unable to handle the request due to a temporary overload, which will likely be alleviated after some delay. Ex. Service provider exceeded the agreed requests per second.
+      
+      ---
+      
+      # Error Codes
+      
+      Every time the API returns an error, it will include an Error resource in the body of the response.
+      
+      ```
+        {
+          message: "The user is already subscribed to the service",
+          code: "user_already_subscribed"
+        }
+      ```
+      
+      The list below describes the codes returned in the Error resource. Those codes are intended to provide a further explanation to the error returned.
+      
+      * **user_already_subscribed** - The user is already subscribed to the service.
+      * **service_not_found** - The service doesn't exists or doesn't belong to the service provider.
+      
+      
+      
   version: 1.0.0
   title: VAS Management API
   x-logo:
