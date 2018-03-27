@@ -1,16 +1,14 @@
 swagger: '2.0'
 info:
   description: >
-    
-    The VAS Management Platform, allows the telecom carrier to control the entire lifecycle of VAS services and subscriptions. The platform allows acquisiton channel providers to create new subscriptions providing a high level of control on the subscriptions. It also provides notifications to service providers so enabling them to provide VAS services to the carrier users in a seamless way. 
-    
-    All the value-added services are configured within the platform, with one or more offers. Offers define the business rules of the service such as trial criteria, billing steps, prices, use periods, types of payment (carrier billing, credit card, bundles) and the automatic cancellation criteria.
-    
+
     ---
     
     # API Reference
+        
+    The VAS Management Platform, allows the telecom carrier to control the entire lifecycle of VAS services and subscriptions. The platform allows acquisiton channel providers to create new subscriptions providing a high level of control on the subscriptions. It also provides notifications to service providers so enabling them to provide VAS services to the carrier users in a seamless way. 
     
-    The VAS Management API is a REST API which has predictable, resource-oriented URLs and uses other HTTP features such as HTTP verbs for each operation, HTTP authentication and HTTP status information to indicate API success or errors.
+    All the value-added services are configured within the platform, with one or more offers. Offers define the business rules of the service such as trial criteria, billing steps, prices, use periods, types of payment (carrier billing, credit card, bundles) and the automatic cancellation criteria.
     
     The picture below shows the relationship between the entities and the main resources.
     
@@ -28,7 +26,7 @@ info:
     
     * **Messaging** - Allow Service Providers to sendo Mobile Terminated messages.
     
-    * **Web Hooks** - The platform send notifications (also known as *Data Syncs*) to the service providers. Those notifications contains information about the event that happened in the platform such as a subription in a service that belogns to the service provider.
+    * **Web Hooks** - The platform send notifications (also known as *Data Syncs*) to the service providers. Those notifications contains information about the event that happened in the platform such as a subription in a service that belongs to the service provider.
     
     
           +----------------+        +----------------+         +----------------+
@@ -46,7 +44,10 @@ info:
       
       ---
       
-      # HTTP Status
+      ## HTTP Status and verbs
+      
+          
+      The VAS Management API is a REST API which has predictable, resource-oriented URLs and uses other HTTP features such as HTTP verbs for each operation, HTTP authentication and HTTP status information to indicate API success or errors.
       
       The API uses HTTP status information to indicate API success or errors. The list below describes the success and error status codes.
       
@@ -61,7 +62,7 @@ info:
       
       ---
       
-      # Error Codes
+      ## Error Codes
       
       Every time the API returns an error, it will include an Error resource in the body of the response.
       
@@ -105,11 +106,11 @@ securityDefinitions:
 # tags are used for organizing operations
 tags:
 - name: channel providers
-  description: Operations available to channel providers
+  description: Operations available to channel providers. The Channel Provider is resposible for a subscription channel and is responsible for selling the service from the service prodiver. Once a user subscribes a service through a channel the service provider will be notified about that event.
 - name: service providers
-  description: Operations available to service providers
+  description: Operations available to service providers. The Service Provider is responsible for providing the service for the user.
 - name: notification
-  description: Notifications sent to the service providers
+  description: Notifications sent to the service providers. The platform send notifications (also known as *Data Syncs*) to the service providers. Those notifications contains information about the event that happened in the platform such as a subription in a service that belongs to the service provider.
   
 paths:
   /subscription:
