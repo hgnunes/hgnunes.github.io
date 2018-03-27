@@ -767,7 +767,7 @@ definitions:
         description: A message providing more details about the error.
       code:
         type: string
-        example: "invalid_subscription_id"
+        example: "error_code"
         description: A code related to the specfic error that occurred.
   MessageItem:
     type: object
