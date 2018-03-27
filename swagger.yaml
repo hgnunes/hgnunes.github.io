@@ -126,7 +126,7 @@ paths:
       - service providers
       summary: Create a subscription
       operationId: addSubscription
-      description: Cretes a new subscription for a given User ID on a given Offer ID
+      description: Cretes a new subscription for a given User ID on a given Offer ID. The Create Subscription operation is usually available for channel providers. Service providers will not be able to use this API, however they will be notified whenever this operation is completed.
       consumes:
       - application/json
       produces:
@@ -269,7 +269,7 @@ paths:
       - notification
       summary: Notify service provider
       operationId: notifyEvent
-      description: Every time  subscription changes its state a notification is sent to the service provider
+      description: Notifications sent to the service provider containing the data related to the event that occurred on the platform (Ex. Trial, Subscription, Cancellation, Renewal, Suspension, Reactivation). Those events notifications contain all relevant data of that event, for example itr every subscription or renewal event it informs the next renewal period, until then the service provider needs to grant  access to the service to that specific user.
       consumes:
       - application/json
       produces:
@@ -316,7 +316,7 @@ paths:
       - service providers
       summary: Send MT message
       operationId: mtReceive
-      description: API for service providers to request a Mobile Terminated message do be sent
+      description: API responsible for sending an Mobile Terminated message to a user. Only service providers who have specific needs for sending SMS messages will have access to that API. Subscription, cancellation and help commands will be intercepted and handled by the platform. The platform is also responsible for sending automatic customer notifications using SMS, those are notifications  related to events that changed the state of a subscription (ex. Subscription, Trial, Cancellation, etc.).
       consumes:
       - application/json
       produces:
@@ -358,7 +358,7 @@ paths:
       - notification
       summary: Receive MO message
       operationId: moReceive
-      description: Notification sent every time a mobile originated message is sent to the service provider (excluding messages intercepted by the SDP platform)
+      description: Notification sent to the service provider whenever an MO is received on the platform and is not intercepted and handled by the platform. For example, subscription and cancel commands are intercepted by the platform and doesn't trigger any notification to the service provider. MO's of engagement are typically notified to service providers.
       consumes:
       - application/json
       produces:
@@ -736,5 +736,6 @@ definitions:
         type: string
         example: "Lorem ipsum dolor sit amet"
         description: A message providing more details about the successful operation.
+
 host: sdp.mobicare.com.br
 basePath: /v1
