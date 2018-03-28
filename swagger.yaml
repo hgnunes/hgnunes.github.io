@@ -85,7 +85,7 @@ info:
       
       ---
       
-      Versioning
+      ##Versioning
       
       The VAS Managemente API is versioned. Whenever there are backwards-incompatible changes to the API, a new version will be released.
       
@@ -136,9 +136,7 @@ securityDefinitions:
       
       Below is an example on how the JWT token should me sent in the HTTP request.
       
-      ````
-      Authorization: Bearer <token>
-      ````
+      `Authorization: Bearer <token>`
 
     name: Authorization
     in: header
