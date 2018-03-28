@@ -93,10 +93,16 @@ info:
       
       ## SMS Subscription Flow
       
-      The SMS subscription flow controls guarantees thet the user has given a double opt-in before subscribing for the service. When the user sends an SMS with a subscription command, the platform identifies the service by searching for the keyword and the shortcode and sends the double opt-in SMS to the user. Once the user sends the SMS confirmation keyword aack to the platform, the subscription operation is completed.
+      The SMS subscription flow guarantees thet the user has given a double opt-in before subscribing for the service. When the user sends an SMS with a subscription command, the platform identifies the service by searching for the keyword and the shortcode and sends the double opt-in SMS to the user. Once the user sends the SMS confirmation keyword aack to the platform, the subscription operation is completed.
       For every new subscription the Service Provider is notified about the new event that ocurred.  The picture below ilustrates the SMS subscription flow.
       
       ![Image](http://hgnunes.github.io/sms_subs_flow.png)
+      
+      ## Consent Page Subscription Flow
+      
+      The SMS subscription flow ensures that all users coming from non-whitelabel web channels access a consent page prior to subscribing to the service. After the consent page is presented and the user gives and opt-in, the subscription is confirmed and the platform notifies the Service Provider about the new subscription event.
+      
+      ![Image](http://hgnunes.github.io/consent_subscription_flow.png)
       
       ## Channel Provider Subscription Flow
       
