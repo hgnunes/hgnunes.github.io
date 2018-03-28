@@ -76,8 +76,12 @@ info:
       
       The list below describes the codes returned in the Error resource. Those codes are intended to provide a further explanation to the error returned.
       
-      * **user_already_subscribed** - The user is already subscribed to the service.
       * **service_not_found** - The service doesn't exists or doesn't belong to the service provider.
+      * **offer_not_found** - The offer doesn't exists or doesn't belong to the service.
+      * **user_not_found** - The user was not found.
+      * **user_already_subscribed** - The user is already subscribed to the service.
+      * **insufficient_balance** - The user has insufficient balance for this operation.
+      * **too_many_requests** - The API client exceed the number of allowed requests during this period.
       
       ---
       
@@ -129,6 +133,12 @@ securityDefinitions:
       The clients of the API need to authenticate each request by including a key in every API request. The API keys are available in the Management Console
       
       The API uses JWT together with HTTP Bearer Authentication to authenticate a service or a channel provider. The JWT token carry priviledges for the provider and should not be pubicly shared.
+      
+      Below is an example on how the JWT token should me sent in the HTTP request.
+      
+      ````
+      Authorization: Bearer <token>
+      ````
 
     name: Authorization
     in: header
