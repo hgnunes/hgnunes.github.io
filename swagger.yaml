@@ -8,7 +8,7 @@ info:
         
     The VAS Management Platform, allows the telecom carrier to control the entire lifecycle of VAS services and subscriptions. The platform allows acquisiton channel providers to create new subscriptions providing a high level of control on the subscriptions. It also provides notifications to service providers so enabling them to provide VAS services to the carrier users in a seamless way. 
     
-    All the value-added services are configured within the platform, with one or more offers. Offers define the business rules of the service such as trial criteria, billing steps, prices, use periods, types of payment (carrier billing, credit card, bundles) and the automatic cancellation criteria.
+    All the value-added services are configured in the platform, with one or more offers. Offers define the business rules of the service such as trial criteria, billing steps, prices, use periods, types of payment (carrier billing, credit card, bundles) and the automatic cancellation criteria.
     
     The picture below shows the relationship between the entities and the main resources.
     
@@ -93,7 +93,16 @@ info:
       
       ## SMS Subscription Flow
       
+      The SMS subscription flow controls guarantees thet the user has given a double opt-in before subscribing for the service. When the user sends an SMS with a subscription command, the platform identifies the service by searching for the keyword and the shortcode and sends the double opt-in SMS to the user. Once the user sends the SMS confirmation keyword aack to the platform, the subscription operation is completed.
+      For every new subscription the Service Provider is notified about the new event that ocurred.  The picture below ilustrates the SMS subscription flow.
+      
       ![Image](http://hgnunes.github.io/sms_subs_flow.png)
+      
+      ## Channel Provider Subscription Flow
+      
+      Channel providers have access to  n API where they can subcribe for a service directly in the platform. In this case the channel provider is responsible for the double opt-in control in its specific channel. Once the subscriptions is completed the Service Provider is notified about the new event that ocurred.
+      
+      ![Image](http://hgnunes.github.io/channel_subscription_flow.png)
       
   version: 1.0.0
   title: VAS Management API
