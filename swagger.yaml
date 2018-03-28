@@ -51,14 +51,15 @@ info:
       
       The API uses HTTP status information to indicate API success or errors. The list below describes the success and error status codes.
       
-      * **HTTP 200** - OK. Request was successly processed.
-      * **HTTP 202** - Accepted. The request was accepted and will be processed asynchronously.
-      * **HTTP 401** - Invalid or expired user credentials. The JWT token is not valid.
-      * **HTTP 402** - User does not have suffient balance to process the request.
-      * **HTTP 403** - The server understood the request but refuses to authorize it. The client should not automatically repeat the request with the same credentials. Ex. The service provider is attempting to manage a subscription from a another service provider.
-      * **HTTP 409** - Conflict. The request could not be completed due to a conflict with the current state of the target resource. Ex. The user is already subscribed to the service in a different offer.
-      * **HTTP 500** - The server encountered an unexpected condition that prevented it from fulfilling the request.
-      * **HTTP 503** - The server is currently unable to handle the request due to a temporary overload, which will likely be alleviated after some delay. Ex. Service provider exceeded the agreed requests per second.
+      * **200** - OK. Request was successly processed.
+      * **202** - Accepted. The request was accepted and will be processed asynchronously.
+      * **400** - The server could not process the request due to a malformed request.
+      * **401** - Invalid or expired user credentials. The JWT token is not valid.
+      * **402** - User does not have suffient balance to process the request.
+      * **403** - The server understood the request but refuses to authorize it. The client should not automatically repeat the request with the same credentials. Ex. The service provider is attempting to manage a subscription from a another service provider.
+      * **409** - Conflict. The request could not be completed due to a conflict with the current state of the target resource. Ex. The user is already subscribed to the service in a different offer.
+      * **500** - The server encountered an unexpected condition that prevented it from fulfilling the request.
+      * **503** - The server is currently unable to handle the request due to a temporary overload, which will likely be alleviated after some delay. Ex. Service provider exceeded the agreed requests per second.
       
       ---
       
@@ -78,7 +79,21 @@ info:
       * **user_already_subscribed** - The user is already subscribed to the service.
       * **service_not_found** - The service doesn't exists or doesn't belong to the service provider.
       
+      ---
       
+      Versioning
+      
+      The VAS Managemente API is versioned. Whenever there are backwards-incompatible changes to the API, a new version will be released.
+      
+      To set the API version on a specific request, just send the version number in the pase path.
+      
+      Example: `https://api.mobicare.com.br/v1/any/path/resource  `  
+      
+      # Service Flow
+      
+      ## SMS Subscription Flow
+      
+      ![Image](http://hgnunes.github.io/sms_subs_flow.png)
       
   version: 1.0.0
   title: VAS Management API
