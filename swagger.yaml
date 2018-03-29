@@ -85,7 +85,7 @@ info:
       
       ---
       
-      ##Versioning
+      ## Versioning
       
       The VAS Managemente API is versioned. Whenever there are backwards-incompatible changes to the API, a new version will be released.
       
@@ -156,7 +156,7 @@ paths:
       tags:
       - service providers
       summary: List subscriptions
-      operationId: searchSubscription
+      operationId: listSubscriptions
       description: Retrieve a list of subscriptions for a given User ID. A Service ID might be also informed as a filter.
       produces:
       - application/json
@@ -217,6 +217,12 @@ paths:
         description: Subscription item to add
         schema:
           $ref: '#/definitions/SubscriptionCreateItem'
+      
+      - in: header
+        name: X-Transaction-ID
+        type: string
+        required: false
+        description: The transaction ID guarantees that the platform will process only one copy of the request. If the API client tries to resend the requeest with the transaction ID, the platform will not process that same request again.
       responses:
         202:
           description: subscription request accepted, a callback will be sent to the provider after processing it
@@ -246,8 +252,55 @@ paths:
           description: number of transactions per second exceed
           schema:
             $ref: '#/definitions/ErrorItem'
-  /subscription/cancel/{subscriptionId}:
-    post:
+  /subscription/{subscriptionId}:
+    get:
+      tags:
+      - service providers
+      summary: Find subscription
+      operationId: findSubscription
+      description: Find a subscription for a given Subscription ID.
+      produces:
+      - application/json
+      parameters:
+      - name: subscriptionId
+        in: path
+        description: The identifier of the subscription.
+        required: true
+        type: integer
+      responses:
+        200:
+          description: returns the subscription
+          schema:
+            $ref: '#/definitions/SubscriptionItemArray'
+        400:
+          description: invalid input, object invalid
+          schema:
+            $ref: '#/definitions/ErrorItem'
+        401:
+          description: invalid or expired user credentials
+          schema:
+            $ref: '#/definitions/ErrorItem'
+        403:
+          description: service does not belong to the service provider
+          schema:
+            $ref: '#/definitions/ErrorItem'
+        404:
+          description: subscription wasn't found
+          schema:
+            $ref: '#/definitions/ErrorItem'
+        409:
+          description: user is already subscribed to the provider's service
+          schema:
+            $ref: '#/definitions/ErrorItem'
+        500:
+          description: unkown error
+          schema:
+            $ref: '#/definitions/ErrorItem'
+        503:
+          description: number of transactions per second exceed
+          schema:
+            $ref: '#/definitions/ErrorItem'
+    delete:
       tags:
       - channel providers
       summary: Cancel a subscription
@@ -268,6 +321,11 @@ paths:
         description: Subscription item to add
         schema:
           $ref: '#/definitions/SubscriptionCancelItem'
+      - in: header
+        name: X-Transaction-ID
+        type: string
+        required: false
+        description: The transaction ID guarantees that the platform will process only one copy of the request. If the API client tries to resend the requeest with the transaction ID, the platform will not process that same request again.
       responses:
         202:
           description: subscription request accepted, a callback will be sent to the provider after processing it
@@ -314,6 +372,11 @@ paths:
         description: Information for the one time charge.
         schema:
           $ref: '#/definitions/BillingItem'
+      - in: header
+        name: X-Transaction-ID
+        type: string
+        required: false
+        description: The transaction ID guarantees that the platform will process only one copy of the request. If the API client tries to resend the requeest with the transaction ID, the platform will not process that same request again.
       responses:
         200:
           description: user was succesfully charged
@@ -365,6 +428,11 @@ paths:
         description: Notification containing the information about an event regarding the subscription
         schema:
           $ref: '#/definitions/NotificationItem'
+      - in: header
+        name: X-Transaction-ID
+        type: string
+        required: false
+        description: The transaction ID guarantees that the platform will process only one copy of the request. If the API client tries to resend the requeest with the transaction ID, the platform will not process that same request again.
       responses:
         200:
           description: service provider succesfully processed the notification
@@ -407,6 +475,11 @@ paths:
         description: Notification containing the information about a mobile terminated message
         schema:
           $ref: '#/definitions/MtItem'
+      - in: header
+        name: X-Transaction-ID
+        type: string
+        required: false
+        description: The transaction ID guarantees that the platform will process only one copy of the request. If the API client tries to resend the requeest with the transaction ID, the platform will not process that same request again.
       responses:
         200:
           description: succesfully processed the notification
@@ -449,6 +522,11 @@ paths:
         description: Notification containing the information about a mobile originated message
         schema:
           $ref: '#/definitions/MoItem'
+      - in: header
+        name: X-Transaction-ID
+        type: string
+        required: false
+        description: The transaction ID guarantees that the platform will process only one copy of the request. If the API client tries to resend the requeest with the transaction ID, the platform will not process that same request again.
       responses:
         200:
           description: service provider succesfully processed the notification
@@ -482,7 +560,6 @@ definitions:
     - serviceId
     - offerId
     - subscriptionChannel
-    - createDate
     properties:
       userId:
         type: string
@@ -510,11 +587,7 @@ definitions:
         type: string
         format: date-time
         example: "2018-01-01T10:10:33.001Z"
-        description: DateTime of the subscription create request. 
-      transactionId:
-        type: string
-        example: "1SDJFS-SDJSFS-0080DF"
-        description: The transaction ID guarantees that the platform will process only one copy of the request. If the Service Provider had a communication issue in the middle of a request and he wants to repeat the request, the transaction ID will guarantee that the platform will not process that same request twice.
+        description: DateTime of the subscription create request.
   SubscriptionRenewItem:
     type: object
     required:
@@ -526,7 +599,6 @@ definitions:
     - period
     - paymentDate
     - nextPaymentDate
-    - transactionId
     properties:
       userId:
         type: string
@@ -559,10 +631,6 @@ definitions:
         type: string
         format: date-time
         example: "2018-01-08T10:10:33.001Z"
-      transactionId:
-        type: string
-        example: "1SDJFS-SDJSFS-0080DF"
-        description: The transaction ID guarantees that the platform will process only one copy of the request. If the Service Provider had a communication issue in the middle of a request and he wants to repeat the request, the transaction ID will guarantee that the platform will not process that same request twice.
   SubscriptionCancelItem:
     type: object
     required:
@@ -571,7 +639,6 @@ definitions:
     - offerId
     - cancelChannel
     - cancelDate
-    - transactionID
     properties:
       userId:
         type: string
@@ -593,11 +660,8 @@ definitions:
         type: string
         format: date-time
         example: "2018-01-14T10:10:33.001Z"
-        description: DateTime of the subscription cancel request. 
-      transactionId:
-        type: string
-        example: "1SDJFS-SDJSFS-0080DF"
-        description: The transaction ID guarantees that the platform will process only one copy of the request. If the Service Provider had a communication issue in the middle of a request and he wants to repeat the request, the transaction ID will guarantee that the platform will not process that same request twice.
+        description: DateTime of the subscription cancel request.
+        
   SubscriptionItemArray:
     type: array
     items:
