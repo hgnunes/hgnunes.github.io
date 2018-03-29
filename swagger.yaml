@@ -169,7 +169,6 @@ paths:
         description: Subscription item to add
         schema:
           $ref: '#/definitions/SubscriptionCreateItem'
-      
       - in: header
         name: X-Transaction-ID
         type: string
@@ -206,6 +205,7 @@ paths:
             $ref: '#/definitions/ErrorItem'
     get:
       tags:
+      - channel providers
       - service providers
       summary: List subscriptions
       operationId: listSubscriptions
