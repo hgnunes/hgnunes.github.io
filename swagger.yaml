@@ -28,19 +28,7 @@ info:
     
     * **Web Hooks** - The platform send notifications (also known as *Data Syncs*) to the service providers. Those notifications contains information about the event that happened in the platform such as a subription in a service that belongs to the service provider.
     
-    
-          +----------------+        +----------------+         +----------------+
-          |Channel Provider|        |Service Provider|<--------+   Data Syncs   |
-          +----------------+        +----------------+         +----------------+
-               |                            |
-               |  +-----------------------------------------------------+
-               |  |                         |                           |
-               v  v                         v                           v
-          +----------------+        +----------------+         +----------------+
-          |  Subscription  |        |  Micro Billing |         |   Messaging    |
-          +----------------+        +----------------+         +----------------+
-    
-      
+    ![Image](http://hgnunes.github.io/entities.png)
       
       ---
       
@@ -57,6 +45,7 @@ info:
       * **401** - Invalid or expired user credentials. The JWT token is not valid.
       * **402** - User does not have suffient balance to process the request.
       * **403** - The server understood the request but refuses to authorize it. The client should not automatically repeat the request with the same credentials. Ex. The service provider is attempting to manage a subscription from a another service provider.
+      * **404** - Not Found. Ex. Subscription ID doesn't exist.
       * **409** - Conflict. The request could not be completed due to a conflict with the current state of the target resource. Ex. The user is already subscribed to the service in a different offer.
       * **500** - The server encountered an unexpected condition that prevented it from fulfilling the request.
       * **503** - The server is currently unable to handle the request due to a temporary overload, which will likely be alleviated after some delay. Ex. Service provider exceeded the agreed requests per second.
@@ -78,9 +67,11 @@ info:
       
       * **service_not_found** - The service doesn't exists or doesn't belong to the service provider.
       * **offer_not_found** - The offer doesn't exists or doesn't belong to the service.
-      * **user_not_found** - The user was not found.
+      * **user_not_from_carrier** - The user was not found in the carrier database.
+      * **blacklisted_user** - User belongs to blacklist and cannot subscribe any service.
       * **user_already_subscribed** - The user is already subscribed to the service.
       * **insufficient_balance** - The user has insufficient balance for this operation.
+      * **user_cannot_subscribe_offer** - The user cannot subscribe the service due to any service or offer constriants. Ex. Prepaid user cannot subscribe post-paid offer.
       * **too_many_requests** - The API client exceed the number of allowed requests during this period.
       
       ---
@@ -169,6 +160,7 @@ paths:
         description: Subscription item to add
         schema:
           $ref: '#/definitions/SubscriptionCreateItem'
+      
       - in: header
         name: X-Transaction-ID
         type: string
@@ -730,7 +722,6 @@ definitions:
     - channel
     - eventDate
     - nextRenewalDate
-    - transactionID
     properties:
       userId:
         type: string
@@ -751,6 +742,11 @@ definitions:
       event:
         type: string
         example: SUBSCRIBE
+        description: A code describing the event that occurred in the platform. Ex. SUBSCRIBE, RENEW and CANCEL.
+      eventDetail:
+        type: string
+        example: CHARGE_SUCCESS
+        description: A code providing more detail on the event. Ex. event- SUBSCRIBE + detail- NO_CREDIT -> It means that a prepaid user subscribed for the service but didn't have enough balance to pay for the service. Other types of details are PAYMENT_FAILED, NO_CREDIT, TRIAL, BUNDLE. The event detail CHARGE_SUCCESS is the only event that indicates that the user was charged for the event.
       channel:
         type: string
         example: SMS
@@ -765,10 +761,6 @@ definitions:
         format: date-time
         example: "2018-01-21T10:10:33.001Z"
         description: DateTime of the next payment. It indicates when the platform will start trying to charge the user.
-      transactionId:
-        type: string
-        example: "1SDJFS-SDJSFS-0080DF"
-        description: The transaction ID of the notification. The Transaction ID will help guarantee that the service provider will not process more than one copy of the request.
   BillingItem:
     type: object
     required:
