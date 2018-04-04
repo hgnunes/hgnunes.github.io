@@ -787,10 +787,6 @@ definitions:
         format: date-time
         example: "2018-01-14T10:10:33.001Z"
         description: DateTime of the billing request.
-      transactionId:
-        type: string
-        example: "1SDJFS-SDJSFS-0080DF"
-        description: The transaction ID of the notification. The Transaction ID will help guarantee that the service provider will not process more than one copy of the request.
   MoItem:
     type: object
     required:
