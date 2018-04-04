@@ -576,12 +576,12 @@ definitions:
         description: The acquisition channel that requested the creations of this subscription. Acquisition Channels might take the following values (SMS, WAP, WEB, IVR, USSD, SATPUSH, SIMCARD, APP).
       subscriptionCampaign:
         type: string
-        example: campaign-123
+        example: campaign123
         description: The marketing campaign that generated the subscription.
       tags:
         type: array
         items:
-        type: string
+          type: string
         example: ["promotion", "foo"]
         description: Tags are used to facilitate searches and analysis on the subscription.
   SubscriptionRenewItem:
