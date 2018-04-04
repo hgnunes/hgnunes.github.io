@@ -336,6 +336,10 @@ paths:
           description: service does not belong to the service provider
           schema:
             $ref: '#/definitions/ErrorItem'
+        404:
+          description: subscription Id doesn't exist
+          schema:
+            $ref: '#/definitions/ErrorItem'
         409:
           description: user is not subscribed to the service
           schema:
@@ -348,12 +352,12 @@ paths:
           description: number of transactions per second exceed
           schema:
             $ref: '#/definitions/ErrorItem'
-  /microbilling:
+  /charge:
     post:
       tags:
       - service providers
       summary: Charges user (one-time billing).
-      operationId: microBilling
+      operationId: charge
       description: Charges users for one-time purchases. The access to this operation is limited to a few service providers who have special requirements for charging outside the context of the recurring billing. 
       consumes:
       - application/json
@@ -553,6 +557,8 @@ definitions:
     - serviceId
     - offerId
     - subscriptionChannel
+    - subscriptionCampaign
+    - tags
     properties:
       userId:
         type: string
@@ -569,18 +575,17 @@ definitions:
       subscriptionChannel:
         type: string
         example: WEB
-        description: The Acquisition Channel requested the creations of this subscription. Acquisition Channels might take the following values (SMS, WAP, WEB, IVR, USSD, SATPUSH, SIMCARD, APP).
+        description: The acquisition channel that requested the creations of this subscription. Acquisition Channels might take the following values (SMS, WAP, WEB, IVR, USSD, SATPUSH, SIMCARD, APP).
+      subscriptionCampaign:
+        type: string
+        example: campaign-123
+        description: The marketing campaign that generated the subscription.
       tags:
         type: array
         items:
           type: string
-        example: ["promotion", "foo", "campaign"]
-        description: Tags are used to facilitate searches and analysis on the subscription. A typical use case for tags would be to tag the new subscription created with a marketing campaign. 
-      createDate:
-        type: string
-        format: date-time
-        example: "2018-01-01T10:10:33.001Z"
-        description: DateTime of the subscription create request.
+        example: ["promotion", "foo"]
+        description: Tags are used to facilitate searches and analysis on the subscription.
   SubscriptionRenewItem:
     type: object
     required:
