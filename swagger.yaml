@@ -557,8 +557,6 @@ definitions:
     - serviceId
     - offerId
     - subscriptionChannel
-    - subscriptionCampaign
-    - tags
     properties:
       userId:
         type: string
@@ -583,7 +581,7 @@ definitions:
       tags:
         type: array
         items:
-          type: string
+        type: string
         example: ["promotion", "foo"]
         description: Tags are used to facilitate searches and analysis on the subscription.
   SubscriptionRenewItem:
@@ -722,11 +720,9 @@ definitions:
     - userId
     - serviceId
     - offerId
-    - amountCharged
     - event
     - channel
     - eventDate
-    - nextRenewalDate
     properties:
       userId:
         type: string
