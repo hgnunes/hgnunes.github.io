@@ -15,7 +15,7 @@ info:
     * **Service Provider** - The Service Provider is responsible for providing the service for the telecom customer.
     
     
-    * **Channel Provider** - The Channel Provider is resposible for a subscription channel and is responsible for selling the service for the service prodiver. Once a customer subscribes for a service through a channel the platform will notify the service provider about the event.
+    * **Channel Provider** - The Channel Provider is resposible for a subscription channel and is responsible for selling the service for the service provider. Once a customer subscribes for a service through a channel the platform will notify the service provider about the event.
     
     
     * **Subscription** - Handles all the operations regarding a Subscription, such as creation, cancellation or updates on a subscription.
@@ -137,7 +137,7 @@ securityDefinitions:
 # tags are used for organizing operations
 tags:
 - name: channel providers
-  description: Operations available to channel providers. The Channel Provider is resposible for a subscription channel and is responsible for selling the service from the service prodiver. Once a user subscribes a service through a channel the service provider will be notified about that event.
+  description: Operations available to channel providers. The Channel Provider is resposible for a subscription channel and is responsible for selling the service from the service provider. Once a user subscribes a service through a channel the service provider will be notified about that event.
 - name: service providers
   description: Operations available to service providers. The Service Provider is responsible for providing the service for the user.
 - name: notification
