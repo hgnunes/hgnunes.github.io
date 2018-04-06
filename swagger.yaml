@@ -103,7 +103,7 @@ info:
       
       ## Channel Provider Subscription Flow
       
-      Channel providers have access to an API where they can subcribe for a service directly in the platform. In this case the channel provider is responsible for the double opt-in control in its specific channel. Once the subscription is completed the service provider is notified about the new event that ocurred.
+      Channel providers have access to an API where they can subcribe for a service directly in the platform. In this case the channel provider is responsible for the double opt-in control in its specific channel. Once the subscription is completed the service provider will be notified about the new event that ocurred.
       
       ![Image](http://docs.oisdp.mobicare.com.br/img/channel_subscription_flow.png)
       
@@ -123,11 +123,11 @@ securityDefinitions:
   Bearer:
     type: apiKey
     description: >
-      The clients of the API need to authenticate each request by including a key in every API request. The API keys are available in the Management Console
+      The clients of the API need to authenticate each request by including a key in every API request. The API keys are available in the Management Console.
       
-      The API uses JWT together with HTTP Bearer Authentication to authenticate a service or a channel provider. The JWT token carry priviledges for the provider and should not be pubicly shared.
+      The API uses JWT together with HTTP Bearer Authentication to authenticate a service or a channel provider. The JWT token carry priviledges for the provider and should not be publicly shared.
       
-      Below is an example on how the JWT token should me sent in the HTTP request.
+      Below is an example of how the JWT token should be sent in the HTTP request.
       
       `Authorization: Bearer <token>`
 
@@ -148,10 +148,9 @@ paths:
     post:
       tags:
       - channel providers
-      - service providers
       summary: Create a subscription
       operationId: addSubscription
-      description: Cretes a new subscription for a given User ID on a given Offer ID. The Create Subscription operation is usually available for channel providers. Service providers will not be able to use this API, however they will be notified whenever this operation is completed.
+      description: Creates a new subscription for a given User Id on a given Offer Id. The Create Subscription operation is usually available for channel providers. Service providers will not be able to use this API, however they will be notified whenever this operation is completed.
       consumes:
       - application/json
       produces:
@@ -167,10 +166,10 @@ paths:
         name: X-Transaction-ID
         type: string
         required: false
-        description: The transaction ID guarantees that the platform will process only one copy of the request. If the API client tries to resend the requeest with the transaction ID, the platform will not process that same request again.
+        description: The transaction ID guarantees that the platform will process only one copy of the request. If the API client tries to resend the request with the transaction ID, the platform will not process that same request again.
       responses:
-        202:
-          description: subscription request accepted, a callback will be sent to the provider after processing it
+        200:
+          description: subscription succesfully created.
           schema:
             $ref: '#/definitions/MessageItem'
         400:
@@ -203,7 +202,7 @@ paths:
       - service providers
       summary: List subscriptions
       operationId: listSubscriptions
-      description: Retrieve a list of subscriptions for a given User ID. A Service ID might be also informed as a filter.
+      description: Retrieve a list of subscriptions for a given User Id. A Service Id might be also informed as a filter.
       produces:
       - application/json
       parameters:
@@ -211,12 +210,12 @@ paths:
         name: userId
         type: string
         required: true
-        description: User ID of the subscriptions to retrieve 
+        description: User Id of the subscriptions to retrieve 
       - in: query
         name: serviceId
         type: integer
         required: false
-        description: Service ID of the subscriptions to retrieve
+        description: Service Id of the subscriptions to retrieve
       responses:
         200:
           description: returns a list of subscriptions
@@ -252,7 +251,7 @@ paths:
       - service providers
       summary: Find subscription
       operationId: findSubscription
-      description: Find a subscription for a given Subscription ID.
+      description: Find a subscription for a given Subscription Id.
       produces:
       - application/json
       parameters:
@@ -265,7 +264,7 @@ paths:
         200:
           description: returns the subscription
           schema:
-            $ref: '#/definitions/SubscriptionItemArray'
+            $ref: '#/definitions/SubscriptionItem'
         400:
           description: invalid input, object invalid
           schema:
@@ -313,7 +312,7 @@ paths:
         type: integer
       - in: body
         name: subscriptionItem
-        description: Subscription item to add
+        description: Subscription to cancel
         schema:
           $ref: '#/definitions/SubscriptionCancelItem'
       - in: header
@@ -323,7 +322,7 @@ paths:
         description: The transaction ID guarantees that the platform will process only one copy of the request. If the API client tries to resend the requeest with the transaction ID, the platform will not process that same request again.
       responses:
         202:
-          description: subscription request accepted, a callback will be sent to the provider after processing it
+          description: subscription cancel request accepted, a callback will be sent to the provider with the result of this operation.
           schema:
             $ref: '#/definitions/MessageItem'
         400:
@@ -463,7 +462,7 @@ paths:
       - service providers
       summary: Send MT message
       operationId: mtReceive
-      description: API responsible for sending an Mobile Terminated message to a user. Only service providers who have specific needs for sending SMS messages will have access to that API. Subscription, cancellation and help commands will be intercepted and handled by the platform. The platform is also responsible for sending automatic customer notifications using SMS, those are notifications  related to events that changed the state of a subscription (ex. Subscription, Trial, Cancellation, etc.).
+      description: API responsible for sending an Mobile Terminated message to a user. Only service providers who have specific needs for sending SMS messages will have access to that API. Subscription, cancellation and help commands will be intercepted and handled by the platform. The platform is also responsible for sending automatic customer notifications using SMS, those notifications are related to events that has changed the state of a subscription (ex. Subscription, Trial, Cancellation, etc.).
       consumes:
       - application/json
       produces:
@@ -478,7 +477,7 @@ paths:
         name: X-Transaction-ID
         type: string
         required: false
-        description: The transaction ID guarantees that the platform will process only one copy of the request. If the API client tries to resend the requeest with the transaction ID, the platform will not process that same request again.
+        description: The transaction ID guarantees that the platform will process only one copy of the request. If the API client tries to resend the request with the transaction ID, the platform will not process that same request again.
       responses:
         200:
           description: succesfully processed the notification
@@ -510,7 +509,7 @@ paths:
       - notification
       summary: Receive MO message
       operationId: moReceive
-      description: Notification sent to the service provider whenever an MO is received on the platform and is not intercepted and handled by the platform. For example, subscription and cancel commands are intercepted by the platform and doesn't trigger any notification to the service provider. MO's of engagement are typically notified to service providers.
+      description: Notification sent to the service provider whenever an MO is received on the platform and is not intercepted and handled by the platform. For example, subscription and cancel commands are intercepted by the platform and doesn't trigger any notification to the service provider. MO's relate to engagement are typically sent to the service providers.
       consumes:
       - application/json
       produces:
@@ -563,15 +562,15 @@ definitions:
       userId:
         type: string
         example: 552199999999
-        description: The identifier of the user to subscribe. 
+        description: The identifier of the user. 
       serviceId:
         type: integer
         example: 98772320
-        description: The Service ID of this subscription. 
+        description: The identifier of the service. 
       offerId:
         type: integer
         example: 5432
-        description: The Offer ID of this subscription.
+        description: The identifier of the offer.
       subscriptionChannel:
         type: string
         example: WEB
@@ -670,15 +669,13 @@ definitions:
     - userId
     - serviceId
     - offerId
+    - subscriptionId
     - subscriptionChannel
     - createDate
     - nextPaymentDate
     - cancelChannel
     - cancelDate
     properties:
-      subscriptionId:
-        type: integer
-        example: 54322145522
       userId:
         type: string
         example: 552199999999
@@ -686,9 +683,15 @@ definitions:
       serviceId:
         type: integer
         example: 98772320
+        description: The identifier of the service.
       offerId:
         type: integer
         example: 5432
+        description: The identifier of the offer.
+      subscriptionId:
+        type: string
+        example: e1cccd0d-62e8-4996-82f4-01015e5bfa3a
+        description: The identifier of the subscription.
       subscriptionChannel:
         type: string
         example: WEB
@@ -741,7 +744,7 @@ definitions:
       amountCharged:
         type: integer
         example: 399
-        description: The amount charged dugin the event. The value will be zero for every event that didn't generate any successfull charge. This number is in cents and assumes the use of local currency. Ex. if amountCharged = 399 than it means $3.99.
+        description: The amount charged. The value will be zero for every event that didn't generate any successfull charge. This number is in cents and assumes the use of local currency. Ex. if amountCharged = 399 than it means $3.99.
       event:
         type: string
         example: SUBSCRIBE
